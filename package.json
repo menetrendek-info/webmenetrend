@@ -2,7 +2,7 @@
   "name": "menetrendek",
   "author": "Shie1bi",
   "description": "A modern menetrend kereső",
-  "version": "0.1.0",
+  "version": "0.3.1",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -45,10 +45,10 @@
     "sanitize-filename": "1.6.3",
     "sharp": "0.31.1",
     "typescript": "5.0.2",
-    "ua-parser-js": "^1.0.33"
+    "ua-parser-js": "^1.0.33",
+    "puppeteer": "^19.8.2"
   },
   "devDependencies": {
-    "puppeteer": "^19.8.2",
     "pwa-asset-generator": "^6.2.1"
   }
 }

@@ -1,4 +1,4 @@
-import { Box, Divider, Space, Stack, Text } from '@mantine/core';
+import { Box, Code, Divider, Space, Stack, Text } from '@mantine/core';
 import type { NextPage } from 'next';
 import { PageHeading, PageSection } from '../components/page';
 import {
@@ -16,7 +16,7 @@ import { FeaturesGrid } from '../components/hello';
 
 const Home: NextPage = () => {
     return (<>
-        <PageHeading icon={IconRoadSign} title="Menetrendek" subtitle='A modern menetrend kereső' />
+        <PageHeading icon={IconRoadSign} title="Menetrendek" subtitle='A modern menetrend kereső' suffix={<Code>v3.1</Code>} />
         <Stack px="xs" spacing={0} sx={{ position: 'relative', display: 'flex' }}>
             <Box sx={(theme) => ({ zIndex: -1, position: 'absolute', top: 0, left: 0, width: '100%', height: 'calc(100% - 20px)', margin: '5px 0', borderRadius: theme.radius.md, background: theme.fn.rgba(theme.colors.dark[9], .7) })} />
             <Divider size="sm" my="sm" mt="md" label={<Text size="md">Útvonalterv készítése</Text>} />
