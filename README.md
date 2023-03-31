@@ -1,4 +1,5 @@
 # Menetrendek.info
+[![Build Docker Image](https://github.com/menetrendek-info/webmenetrend/actions/workflows/ci.yml/badge.svg)](https://github.com/menetrendek-info/webmenetrend/actions/workflows/ci.yml)
 
 ![Banner](https://github.com/menetrendek-info/.github/blob/main/profile/banner.png?raw=true)
 
