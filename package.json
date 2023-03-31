@@ -38,6 +38,8 @@
     "mysql2": "^3.2.0",
     "next": "13.2.4",
     "next-pwa": "^5.6.0",
+    "next-sitemap": "^4.0.6",
+    "puppeteer": "^19.8.2",
     "react": "18.2.0",
     "react-cookie": "^4.1.1",
     "react-dom": "18.2.0",
@@ -45,8 +47,7 @@
     "sanitize-filename": "1.6.3",
     "sharp": "0.31.1",
     "typescript": "5.0.2",
-    "ua-parser-js": "^1.0.33",
-    "puppeteer": "^19.8.2"
+    "ua-parser-js": "^1.0.33"
   },
   "devDependencies": {
     "pwa-asset-generator": "^6.2.1"
