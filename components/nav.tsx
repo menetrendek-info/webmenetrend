@@ -52,7 +52,7 @@ function NavbarLink({ icon: Icon, label, onClick, active, href }: NavbarLinkProp
     const { classes, cx } = useStyles();
     const touchScreen = useMediaQuery('(hover: none)');
     const external = href && href.startsWith("http")
-    const [open, setOpen] = !external ? [false, () => { }] : useState(false)
+    const [open, setOpen] = useState(false)
 
     return (<>
         {!external ? <></> : <Modal size="lg" title={`Tovább ide: ${(new URL(href)).origin.split("://")[1]}`} opened={open} onClose={() => setOpen(false)}>
