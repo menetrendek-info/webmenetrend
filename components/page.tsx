@@ -10,7 +10,7 @@ export const PageHeading = ({ icon, title, subtitle, suffix }: { icon?: TablerIc
                 <ThemeIcon mb={-6} size={65} sx={{ borderRadius: "100%" }} variant="gradient" gradient={{ from: theme.colors[theme.primaryColor][theme.primaryShade as any], to: theme.colors["cyan"][theme.primaryShade as any] }}>
                     {createElement(icon, { size: 65 / 7 * 5.5, stroke: 1.5 })}
                 </ThemeIcon>}
-            <Group spacing="sm" align="baseline">
+            <Group noWrap spacing="sm" align="baseline">
                 <Title size={50}>{title}</Title>
                 {suffix}
             </Group>

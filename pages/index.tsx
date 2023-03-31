@@ -13,10 +13,13 @@ import {
 import "dayjs/locale/hu"
 import { Search } from '../components/menu';
 import { FeaturesGrid } from '../components/hello';
+import { useMediaQuery } from '@mantine/hooks';
 
 const Home: NextPage = () => {
+    const versionHide = useMediaQuery('(max-width: 435px)');
+
     return (<>
-        <PageHeading icon={IconRoadSign} title="Menetrendek" subtitle='A modern menetrend kereső' suffix={<Code>v3.1</Code>} />
+        <PageHeading icon={IconRoadSign} title="Menetrendek" subtitle='A modern menetrend kereső' suffix={versionHide ? <></> : <Code>v3.1</Code>} />
         <Stack px="xs" spacing={0} sx={{ position: 'relative', display: 'flex' }}>
             <Box sx={(theme) => ({ zIndex: -1, position: 'absolute', top: 0, left: 0, width: '100%', height: 'calc(100% - 20px)', margin: '5px 0', borderRadius: theme.radius.md, background: theme.fn.rgba(theme.colors.dark[9], .7) })} />
             <Divider size="sm" my="sm" mt="md" label={<Text size="md">Útvonalterv készítése</Text>} />
