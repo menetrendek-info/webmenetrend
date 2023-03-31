@@ -1,12 +1,16 @@
 {
-  "name": "web",
+  "name": "menetrendek",
+  "author": "Shie1bi",
+  "description": "A modern menetrend kereső",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && next-sitemap --config next-sitemap.config.mjs",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "screenshots": "node ./screenshots.mjs",
+    "icons": "node ./pwa-assets.mjs"
   },
   "dependencies": {
     "@emotion/react": "^11.10.6",
@@ -18,19 +22,33 @@
     "@mantine/notifications": "^6.0.5",
     "@mantine/spotlight": "^6.0.5",
     "@tabler/icons": "1.101.0",
+    "@types/lodash": "^4.14.192",
     "@types/node": "18.15.11",
     "@types/react": "18.0.31",
     "@types/react-dom": "18.0.11",
     "@types/sharp": "^0.31.1",
+    "@types/ua-parser-js": "^0.7.36",
     "axios": "^1.3.4",
+    "calendar-link": "^2.4.0",
     "dayjs": "^1.11.7",
+    "dotenv": "^16.0.3",
     "eslint": "8.37.0",
     "eslint-config-next": "13.2.4",
+    "lodash": "^4.17.21",
+    "mysql2": "^3.2.0",
     "next": "13.2.4",
+    "next-pwa": "^5.6.0",
     "react": "18.2.0",
+    "react-cookie": "^4.1.1",
     "react-dom": "18.2.0",
+    "react-icons": "^4.8.0",
     "sanitize-filename": "1.6.3",
     "sharp": "0.31.1",
-    "typescript": "5.0.2"
+    "typescript": "5.0.2",
+    "ua-parser-js": "^1.0.33"
+  },
+  "devDependencies": {
+    "puppeteer": "^19.8.2",
+    "pwa-asset-generator": "^6.2.1"
   }
 }

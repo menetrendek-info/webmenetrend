@@ -6,12 +6,16 @@ import {
     Stack,
     MantineNumberSize,
     Group,
+    Modal,
+    Text,
+    Button,
 } from '@mantine/core';
 import { useMediaQuery } from "@mantine/hooks"
 import { TablerIcon } from '@tabler/icons';
 import { Logo } from './brand';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
 
 const useStyles = createStyles((theme) => ({
     link: {
@@ -47,14 +51,32 @@ interface NavbarLinkProps {
 function NavbarLink({ icon: Icon, label, onClick, active, href }: NavbarLinkProps) {
     const { classes, cx } = useStyles();
     const touchScreen = useMediaQuery('(hover: none)');
+    const external = href && href.startsWith("http")
+    const [open, setOpen] = !external ? [false, () => { }] : useState(false)
 
-    return (
-        <Link href={href || "#"}>
-            <UnstyledButton onClick={onClick} className={cx(classes.link, { [classes.active]: active })}>
+    return (<>
+        {!external ? <></> : <Modal size="lg" title={`Tovább ide: ${(new URL(href)).origin.split("://")[1]}`} opened={open} onClose={() => setOpen(false)}>
+            <Text>
+                Egy külső weboldalra készülsz átmenni. Az oldalunk nem felelős a külső weboldalak tartalmáért vagy biztonságáért. Folytatod?
+            </Text>
+            <Group pt="sm" position='right'>
+                <Button onClick={() => setOpen(false)} color='gray'>
+                    Nem
+                </Button>
+                <Button onClick={() => {
+                    setOpen(false)
+                    window.open(href, "_blank")
+                }}>
+                    Igen
+                </Button>
+            </Group>
+        </Modal>}
+        <Link href={external ? "#" : href || "#"}>
+            <UnstyledButton onClick={external ? () => setOpen(true) : onClick} className={cx(classes.link, { [classes.active]: active })}>
                 <Icon stroke={1.5} size={30} />
             </UnstyledButton>
         </Link>
-    );
+    </>);
 }
 
 const navSize = 80
@@ -79,7 +101,7 @@ export function NavbarMinimal({ data, doBreak }: { data: Array<NavbarLinkProps>,
         />
     ));
 
-    return (
+    return (<>
         <Navbar p={!doBreak ? "md" : undefined} sx={{ position: "fixed", display: "flex", ...(doBreak ? { bottom: 0, alignItems: "center", justifyContent: "center", } : {}) }} height={doBreak ? navSize : "100vh"} width={{ base: !doBreak ? navSize : "100vw" }}>
             <Stack>
                 {doBreak ? <></> : <Center>
@@ -92,5 +114,5 @@ export function NavbarMinimal({ data, doBreak }: { data: Array<NavbarLinkProps>,
                 </Navbar.Section>
             </Stack>
         </Navbar >
-    );
+    </>);
 }
