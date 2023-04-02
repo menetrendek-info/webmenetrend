@@ -80,3 +80,12 @@ html {
 ::selection {
   background: #1d8bbe8c;
 }
+
+.my-link {
+  text-decoration: underline white;
+  transition: text-decoration-color .2s;
+}
+
+.my-link:hover {
+  text-decoration-color: transparent;
+}
