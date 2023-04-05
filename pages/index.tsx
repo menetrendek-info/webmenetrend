@@ -83,7 +83,7 @@ const Home: NextPage = () => {
                         onClick={() => navigator.share({ url: 'https://menetrendek.info', title: "Menetrendek.info", text: "A modern menetrend kereső" })}
                     >
                         <Text size="xl">Oszd meg a weboldalt!</Text>
-                        <Text>Ha tetszik a weboldalunk, és szeretnéd megosztani másokkal is, akkor használd a közösségi média gombokat a weboldal tetején vagy alján. Minél több ember ismeri meg a weboldalunkat, annál jobban tudunk fejlődni és bővülni.</Text>
+                        <Text>Ha tetszik a weboldalunk, és szeretnéd megosztani másokkal is, akkor kattints ide, vagy használd a megosztás gombokat az utvonaltervek jobb alsó sarkában. Minél több ember ismeri meg a weboldalunkat, annál jobban tudunk fejlődni és bővülni.</Text>
                     </Stack>
                 </List.Item>
             </List>
