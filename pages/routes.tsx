@@ -3,10 +3,10 @@ import { apiCall } from "../components/api"
 import { dateString, exposition, route } from "../client"
 import { PageHeading } from "../components/page"
 import { IconCalendarEvent, IconClock, IconLine, IconShare } from "@tabler/icons"
-import { Accordion, ActionIcon, Group, Loader, Skeleton, Slider, Text, Timeline } from "@mantine/core"
+import { Accordion, ActionIcon, Group, Loader, Skeleton, Slider, Text, Timeline, Stack, Space } from "@mantine/core"
 import { useMyAccordion } from "../components/styles"
 import { ActionBullet, RouteExposition, RouteSummary } from "../components/routes"
-import { useEffect, useState } from "react"
+import { memo, useEffect, useState } from "react"
 import { yahoo, office365, google, ics, outlook, CalendarEvent } from "calendar-link";
 import { useRouter } from "next/router"
 import { useCookies } from "react-cookie"
@@ -28,6 +28,10 @@ const cal = (service: number, body: any) => {
         }
     })(), "_blank")
 }
+
+const RE = memo((props: any) => {
+    return (<RouteExposition {...props} />)
+})
 
 const Route = ({ route, index }: { route: route, index: any }) => {
     const [exposition, setExposition] = useState<Array<exposition>>([])
@@ -70,22 +74,24 @@ const Route = ({ route, index }: { route: route, index: any }) => {
             <RouteSummary item={route} />
         </Accordion.Control>
         <Accordion.Panel>
-            {!exposition.length ? (<><Timeline active={Infinity}>{Array(route.expositionData.exposition.runcount * 2).fill(0).map((v, i, arr) => {
-                if (i + 1 === arr.length) {// Last element
-                    return (<Timeline.Item key={i} bullet={<ActionBullet muvelet="leszállás" network={1} />}>
-                        <Skeleton radius="lg" height={53} />
-                    </Timeline.Item>)
-                } else {
-                    return (<Timeline.Item key={i} lineVariant={i % 2 !== 0 ? "dashed" : "solid"} bullet={<ActionBullet muvelet={i % 2 !== 0 ? "átszállás" : "felszállás"} network={1} />}>
-                        <Skeleton radius="lg" height={i % 2 === 0 ? 98 : 120} />
-                    </Timeline.Item>)
-                }
-            })}</Timeline>
+            {!exposition.length ? (<Stack>
+                <Skeleton height={37} />
+                <Timeline active={Infinity}>{Array(route.expositionData.exposition.runcount * 2).fill(0).map((v, i, arr) => {
+                    if (i + 1 === arr.length) {// Last element
+                        return (<Timeline.Item key={i} bullet={<ActionBullet muvelet="leszállás" network={1} />}>
+                            <Skeleton radius="lg" height={53} />
+                        </Timeline.Item>)
+                    } else {
+                        return (<Timeline.Item key={i} lineVariant={i % 2 !== 0 ? "dashed" : "solid"} bullet={<ActionBullet muvelet={i % 2 !== 0 ? "átszállás" : "felszállás"} network={1} />}>
+                            <Skeleton radius="lg" height={i % 2 === 0 ? 98 : 120} />
+                        </Timeline.Item>)
+                    }
+                })}</Timeline>
                 <Group position="right">
                     <Loader size={28} />
                 </Group>
-            </>) : <>
-                <RouteExposition exposition={exposition} />
+            </Stack>) : <>
+                <RE route={route} exposition={exposition} />
                 <Group position="right">
                     <ActionIcon role="button" aria-label="Hozzáadás a naptárhoz" onClick={() => cal(Number(cookies["calendar-service"]), body)}>
                         <IconCalendarEvent />
@@ -148,7 +154,10 @@ const Routes: NextPage = (props: any) => {
 
     return (<>
         <PageHeading title="Járatok" subtitle={`Járatok ${props.routes.fromSettle} és ${props.routes.toSettle} között`} icon={IconLine} />
-        {cookies["use-route-limit"] !== 'true' ? <></> : <Slider my="sm" step={15} value={sliderVal || 0} onChange={setSliderVal} thumbChildren={<IconClock size={30} />} styles={{ thumb: { borderWidth: 0, padding: 0, height: 25, width: 25 } }} onChangeEnd={setTime} marks={marks()} min={0} max={1440} mb="xl" size="lg" label={(e) => `${Math.floor(e / 60).toString().padStart(2, '0')}:${(e % 60).toString().padStart(2, '0')}`} />}
+        {cookies["use-route-limit"] !== 'true' ? <></> : <>
+            <Slider my="sm" step={15} value={sliderVal || 0} onChange={setSliderVal} thumbChildren={<IconClock size={30} />} styles={{ thumb: { borderWidth: 0, padding: 0, height: 25, width: 25 } }} onChangeEnd={setTime} marks={marks()} min={0} max={1440} size="lg" label={(e) => `${Math.floor(e / 60).toString().padStart(2, '0')}:${(e % 60).toString().padStart(2, '0')}`} />
+            <Space h="xs" />
+        </>}
         <Accordion classNames={classes}>
             {!display.length ? <Text size="sm" align="center" color="dimmed">A megadott idő után nem találtunk semmit.</Text> :
                 display.map((key: any, i: any) => {
