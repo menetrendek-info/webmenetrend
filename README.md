@@ -10,18 +10,20 @@ A menetrendek.info egy weboldal, amely segít a tömegközlekedési utazások te
 - Egyszerű megálló- és állomáskeresés
 - Gyors elérés a legutóbbi elemek mentésével
 - Útvonaltervek megosztása kép formájában
+- Az útvonaltervek térképen is megtekinthetőek, így az átszállások könnyen értelmezhetőek
 - PWA (progresszív webalkalmazás) támogatás, amely lehetővé teszi a weboldal letöltését alkalmazásként a telefonodra
 - Aktív fejlesztés, amely folyamatosan javítja és bővíti a weboldal funkcióit és teljesítményét
 
 Ha szeretnél többet megtudni a weboldalról, látogass el a https://menetrendek.info oldalra, vagy kövesd a fejlesztéseket a GitHub-on: https://github.com/menetrendek-info.
 
-## 🇬🇧 A modern timetable search engine
+## 🇬🇧 The modern timetable search engine
 
 Menetrendek.info is a website that helps you plan your trips by public transport in Hungary. The website uses the timetable data of several companies, so you can get almost anywhere by bus, train or boat. The website has a modern, clean and mobile-friendly interface, and offers many useful features:
 
 - Easy stop and station search
 - Quick access by saving the latest items
 - Route sharing as images
+- Routes can be viewed on the map to make transfers easy to understand
 - PWA (progressive web app) support, which allows you to download the website as an app on your phone
 - Active development, which constantly improves and expands the website's features and performance
 
