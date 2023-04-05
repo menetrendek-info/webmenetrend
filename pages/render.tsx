@@ -15,11 +15,11 @@ const Render: NextPage = (props: any) => {
         primaryShade: 7,
         fontFamily: 'Sora, sans-serif',
         fontSizes: {
-            "xs": '18',
-            "sm": '20',
-            "md": '22',
-            "lg": '24',
-            "xl": '26',
+            "xs": '18px',
+            "sm": '20px',
+            "md": '22px',
+            "lg": '24px',
+            "xl": '26px',
         }
     }}>
         <Center sx={{ zIndex: 89, position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'black' }}>
@@ -27,7 +27,7 @@ const Render: NextPage = (props: any) => {
                 <Paper p="sm" radius="lg">
                     <RouteSummary item={route} options={{ hideNetworks: true }} />
                     <Space h='md' />
-                    <RouteExposition exposition={exposition} options={{ hideRunsButton: true }} />
+                    <RouteExposition route={route} exposition={exposition} options={{ hideRunsButton: true, disableMap: true }} />
                 </Paper>
                 <Group py={6} style={{ opacity: .8 }} position="right" spacing={2}>
                     <IconLink size={17} />

@@ -1,13 +1,15 @@
-import { ActionIcon, Avatar, Divider, Grid, Group, Stack, Text, Timeline } from "@mantine/core";
-import { IconWalk, IconCheck, IconAlertTriangle, IconInfoCircle } from "@tabler/icons";
+import { ActionIcon, Avatar, Divider, Grid, Group, Stack, Text, Timeline, Button, Skeleton, Loader } from "@mantine/core";
+import { IconWalk, IconCheck, IconAlertTriangle, IconInfoCircle, IconMap, IconListDetails } from "@tabler/icons";
 import Link from "next/link"
 import { useRouter } from "next/router"
 import useColors from "./colors"
 import { ColoredStopIcon, StopIcon } from "../components/stops"
-import { memo } from "react";
+import { memo, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { dateString, exposition, route } from "../client";
 import { useMediaQuery } from "@mantine/hooks";
+import dynamic from "next/dynamic"
+import { apiCall } from "./api";
 
 export const calcDisc = (fee: number, discount?: number) => {
     return discount ? Math.abs(fee - (fee * (discount / 100))) : fee
@@ -17,6 +19,14 @@ export const currency = new Intl.NumberFormat('hu-HU', { style: 'currency', curr
 function onlyUnique(value: any, index: any, self: any) {
     return self.indexOf(value) === index;
 }
+
+const RMP = memo((props: { id: any, details: any, exposition: any }) => {
+    if (typeof window === 'undefined') return <></>
+    const RouteMapView = dynamic(() => import('../components/maps').then((mod) => mod.RouteMapView), {
+        ssr: false
+    })
+    return <RouteMapView {...props} />
+})
 
 export const ActionBullet = memo(({ muvelet, network, size, ...props }: { muvelet: "átszállás" | "leszállás" | "felszállás", network?: number, size?: number }) => {
     if (!size) { size = 20 }
@@ -64,45 +74,70 @@ export const RouteSummary = memo(({ item, options }: { item: route, options?: { 
     </Stack>)
 })
 
-export const RouteExposition = ({ exposition, options }: { exposition: Array<exposition>, options?: { hideRunsButton?: boolean } }) => {
-    const [cookies] = useCookies(["discount-percentage"])
+export const RouteExposition = ({ route, exposition, options }: { route: route, exposition: Array<exposition>, options?: { hideRunsButton?: boolean, disableMap?: boolean } }) => {
+    const [mapView, setMapView] = useState(false)
+    const [geoInfo, setGeoInfo] = useState(null)
     const router = useRouter()
-    return (<Timeline active={Infinity}>
-        {exposition.map((item, index) => (<Timeline.Item lineVariant={item.action === "átszállás" ? "dashed" : "solid"} key={index} bullet={<ActionBullet muvelet={item.action} network={item.network!} />}>
-            <Stack spacing={0}>
-                <Group spacing={0} position="apart">
+
+    useEffect(() => {
+        if (!geoInfo && !options?.disableMap) {
+            apiCall("POST", "/api/geoInfo", { nativeData: route.expositionData.nativeData, exposition: route.expositionData.exposition, datestring: router.query['d'] ? router.query['d'] as string : dateString(new Date()) }).then(setGeoInfo)
+        }
+    }, [geoInfo])
+
+    return (<Stack>
+        {options?.disableMap ? <></> : <Button variant="outline" leftIcon={!geoInfo || !exposition ? <Loader size="sm" /> : !mapView ? <IconMap /> : <IconListDetails />} onClick={!geoInfo || !exposition ? () => { } : () => setMapView(!mapView)}>
+            {!mapView ? "Térkép nézet" : "Idővonal nézet"}
+        </Button>}
+        {mapView ?
+            !geoInfo || !exposition ? <></> : <RMP exposition={exposition} details={geoInfo} id={(new Date()).getTime()} />
+            : <Timeline active={Infinity}>
+                {exposition.map((item, index) => (<Timeline.Item lineVariant={item.action === "átszállás" ? "dashed" : "solid"} key={index} bullet={<ActionBullet muvelet={item.action} network={item.network!} />}>
                     <Stack spacing={0}>
-                        <Text>{item.station}</Text>
-                        <Group spacing="xs" position="left">
-                            <Text size="xl" my={-2}>{item.time}</Text>
-                            {!item.departurePlatform ? <></> : <Avatar variant="outline" radius="xl" size={25}>{item.departurePlatform}</Avatar>}
-                        </Group>
+                        <ExpositionBody item={item} options={options} />
                     </Stack>
-                    {!item.runsData || options?.hideRunsButton ? <></> :
-                        <Link href={`/runs?${new URLSearchParams({ id: item.runsData.runId, s: item.runsData.sls, e: item.runsData.sls, d: router.query['d'] as string || dateString(new Date()) }).toString()}`}>
-                            <ActionIcon>
-                                <IconInfoCircle />
-                            </ActionIcon>
-                        </Link>
-                    }
+                </Timeline.Item>))}
+            </Timeline>
+        }
+    </Stack>)
+}
+
+export const ExpositionBody = ({ item, options, onClick }: { item: exposition, options?: { hideRunsButton?: boolean }, onClick?: any }) => {
+    const router = useRouter()
+    const [cookies] = useCookies(["discount-percentage"])
+
+    return (<>
+        <Group onClick={onClick} spacing={0} position="apart">
+            <Stack spacing={0}>
+                <Text>{item.station}</Text>
+                <Group spacing="xs" position="left">
+                    <Text size="xl" my={-2}>{item.time}</Text>
+                    {!item.departurePlatform ? <></> : <Avatar variant="outline" radius="xl" size={25}>{item.departurePlatform}</Avatar>}
                 </Group>
-                {!item.provider || !item.runId || !item.network ? <></> : <Group spacing="xs">
-                    <ColoredStopIcon stroke={1.5} network={item.network} />
-                    <Text size="sm">{item.provider}</Text>
-                    <Text size="sm">{item.runId}</Text>
-                </Group>}
-                {!item.fare || !item.distance || !item.duration ? <></> :
-                    <Group spacing={10}>
-                        {item.fare < 0 ? <></> : <Text suppressHydrationWarning size="sm">{currency.format(calcDisc(item.fare, cookies["discount-percentage"]))}</Text>}
-                        <Text size="sm">{item.distance} km</Text>
-                        <Text size="sm">{item.duration} perc</Text>
-                    </Group>
-                }
-                {!item.stations ? <></> : <Text size="sm">{item.stations}</Text>}
-                {!item.operates ? <></> : <Text size="sm">Közlekedik: {item.operates}</Text>}
-                {!item.timeForTransfer ? <></> :
-                    <Text size="sm">{item.timeForTransfer}</Text>}
             </Stack>
-        </Timeline.Item>))}
-    </Timeline>)
+            {!item.runsData || options?.hideRunsButton ? <></> :
+                <Link href={`/runs?${new URLSearchParams({ id: item.runsData.runId, s: item.runsData.sls, e: item.runsData.sls, d: router.query['d'] as string || dateString(new Date()) }).toString()}`}>
+                    <ActionIcon>
+                        <IconInfoCircle />
+                    </ActionIcon>
+                </Link>
+            }
+        </Group>
+        {!item.provider || !item.runId || !item.network ? <></> : <Group spacing="xs">
+            <ColoredStopIcon stroke={1.5} network={item.network} />
+            <Text size="sm">{item.provider}</Text>
+            <Text size="sm">{item.runId}</Text>
+        </Group>}
+        {!item.fare || !item.distance || !item.duration ? <></> :
+            <Group spacing={10}>
+                {item.fare < 0 ? <></> : <Text suppressHydrationWarning size="sm">{currency.format(calcDisc(item.fare, cookies["discount-percentage"]))}</Text>}
+                <Text size="sm">{item.distance} km</Text>
+                <Text size="sm">{item.duration} perc</Text>
+            </Group>
+        }
+        {!item.stations ? <></> : <Text size="sm">{item.stations}</Text>}
+        {!item.operates ? <></> : <Text size="sm">Közlekedik: {item.operates}</Text>}
+        {!item.timeForTransfer ? <></> :
+            <Text size="sm">{item.timeForTransfer}</Text>}
+    </>)
 }
