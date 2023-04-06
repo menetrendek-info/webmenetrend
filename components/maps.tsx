@@ -40,7 +40,6 @@ const getExtent = (map: L.Map, pad: number = 0) => {
 }
 
 export const RouteMapView = ({ id, details, exposition }: { id: any, details: any, exposition: any }) => {
-    const [cookies] = useCookies(["discount-percentage"])
     const stops = !details ? undefined : (details.results.features as Array<any>).filter((item) => item.geometry.type === "Point")
     const theme = useMantineTheme()
     const color = theme.colors[theme.primaryColor][7]
@@ -57,60 +56,62 @@ export const RouteMapView = ({ id, details, exposition }: { id: any, details: an
     }, [])
 
     useEffect(() => {
-        const markers = L.markerClusterGroup({
-            spiderfyDistanceMultiplier: .05,
-            showCoverageOnHover: true,
-            zoomToBoundsOnClick: true,
-            iconCreateFunction: (cluster) => {
-                return L.divIcon({ html: (renderToStaticMarkup(<ThemeIcon radius="xl"><IconRefresh {...iconProps} /></ThemeIcon>)) });
-            },
-            animate: true,
-        });
-        const mapPin = (muvelet: string) => L.divIcon({
-            html: renderToStaticMarkup(<ThemeIcon radius="xl">{(() => {
-                switch (muvelet) {
-                    case 'felszall':
-                        return <IconArrowBigTop {...iconProps} />
-                    case 'atszallashoz_felszall':
-                        return <IconArrowBigTop {...iconProps} />
-                    case 'atszallashoz_leszall':
-                        return <IconArrowBigDown {...iconProps} />
-                    case 'leszall':
-                        return <IconCheck {...iconProps} />
-                    default:
-                        return <IconQuestionMark {...iconProps} />
+        if (details) {
+            const markers = L.markerClusterGroup({
+                spiderfyDistanceMultiplier: .05,
+                showCoverageOnHover: true,
+                zoomToBoundsOnClick: true,
+                iconCreateFunction: (cluster) => {
+                    return L.divIcon({ html: (renderToStaticMarkup(<ThemeIcon radius="xl"><IconRefresh {...iconProps} /></ThemeIcon>)) });
+                },
+                animate: true,
+            });
+            const mapPin = (muvelet: string) => L.divIcon({
+                html: renderToStaticMarkup(<ThemeIcon radius="xl">{(() => {
+                    switch (muvelet) {
+                        case 'felszall':
+                            return <IconArrowBigTop {...iconProps} />
+                        case 'atszallashoz_felszall':
+                            return <IconArrowBigTop {...iconProps} />
+                        case 'atszallashoz_leszall':
+                            return <IconArrowBigDown {...iconProps} />
+                        case 'leszall':
+                            return <IconCheck {...iconProps} />
+                        default:
+                            return <IconQuestionMark {...iconProps} />
+                    }
+                })()}</ThemeIcon>),
+                className: "map-pin-marker",
+                iconSize: [20, 20],
+                iconAnchor: [10, 20],
+            });
+            const [inside, outside] = [new L.FeatureGroup(), new L.FeatureGroup()]
+            for (let feature of details.results.features) {
+                const geoJson: any = {
+                    ...feature,
+                    ...crs
                 }
-            })()}</ThemeIcon>),
-            className: "map-pin-marker",
-            iconSize: [20, 20],
-            iconAnchor: [10, 20],
-        });
-        const [inside, outside] = [new L.FeatureGroup(), new L.FeatureGroup()]
-        for (let feature of details.results.features) {
-            const geoJson: any = {
-                ...feature,
-                ...crs
+                const elem = L.Proj.geoJson(geoJson, { style: { weight: 3 }, pointToLayer: (feature, latlng) => L.marker(latlng, { icon: mapPin(geoJson.properties.type) }) })
+                switch (feature.geometry.type) {
+                    case 'Point':
+                        elem.addTo(markers)
+                        break
+                    case 'LineString':
+                        if (feature.properties.inside) { elem.addTo(inside) } else { elem.addTo(outside) }
+                        inside.setStyle({ color: color })
+                        outside.setStyle({ color: theme.colors.gray[7], dashArray: [10, 5] })
+                        break
+                    case 'MultiPoint':
+                        break
+                    default:
+                        break
+                }
             }
-            const elem = L.Proj.geoJson(geoJson, { style: { weight: 3 }, pointToLayer: (feature, latlng) => L.marker(latlng, { icon: mapPin(geoJson.properties.type) }) })
-            switch (feature.geometry.type) {
-                case 'Point':
-                    elem.addTo(markers)
-                    break
-                case 'LineString':
-                    if (feature.properties.inside) { elem.addTo(inside) } else { elem.addTo(outside) }
-                    inside.setStyle({ color: color })
-                    outside.setStyle({ color: theme.colors.gray[7], dashArray: [10, 5] })
-                    break
-                case 'MultiPoint':
-                    break
-                default:
-                    break
-            }
+            outside.addTo((window as any).map)
+            inside.addTo((window as any).map)
+            markers.addTo((window as any).map);
+            (window as any).map.flyToBounds(inside.getBounds(), { duration: .5 })
         }
-        outside.addTo((window as any).map)
-        inside.addTo((window as any).map)
-        markers.addTo((window as any).map);
-        (window as any).map.flyToBounds(inside.getBounds(), { duration: .5 })
     }, [details])
 
     return (<Box sx={{ minHeight: '20rem', position: 'relative', display: 'flex', flexWrap: 'wrap', '& > *': { flex: '40%', minWidth: '20rem' } }} mb="sm">
@@ -120,16 +121,18 @@ export const RouteMapView = ({ id, details, exposition }: { id: any, details: an
             <Timeline active={Infinity}>
                 {!stops ? <></> : stops.map((stop: any, i: any) => {
                     const focus = () => {
-                        const emptyPin = L.divIcon({
-                            html: ``,
-                            className: "empty-marker",
-                            iconSize: [0, 0],
-                            iconAnchor: [0, 0],
-                        });
-                        var feature = L.Proj.geoJson({ ...stop, ...crs }, { pointToLayer: (feature, latlng) => L.marker(latlng, { icon: emptyPin }) }).addTo((window as any).map);
-                        (window as any).map.flyToBounds(feature.getBounds(), { maxZoom: 15, duration: .5 })
-                        feature.off()
-                        feature.remove()
+                        try {
+                            const emptyPin = L.divIcon({
+                                html: ``,
+                                className: "empty-marker",
+                                iconSize: [0, 0],
+                                iconAnchor: [0, 0],
+                            });
+                            var feature = L.Proj.geoJson({ ...stop, ...crs }, { pointToLayer: (feature, latlng) => L.marker(latlng, { icon: emptyPin }) }).addTo((window as any).map);
+                            (window as any).map.flyToBounds(feature.getBounds(), { maxZoom: 15, duration: .5 })
+                            feature.off()
+                            feature.remove()
+                        } catch (e) { console.log(e) }
                     }
                     const stopExposition: exposition = exposition[i]
                     return (<Timeline.Item bullet={<Box onClick={focus} p={0} m={0} sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}><ActionBullet size={18} muvelet={stopExposition.action} network={stopExposition.network} /></Box>} key={i}>
