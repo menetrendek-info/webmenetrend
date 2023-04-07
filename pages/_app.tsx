@@ -31,7 +31,7 @@ export default function App(props: AppProps) {
   const [pageLoading, setPageLoading] = useState(false)
   const [[selection, setSelection], [input, setInput]] = [useState<Selection>({ to: undefined, from: undefined }), useState<Input>({ to: "", from: "" })]
   const [menuOpen, setMenuOpen] = useState(-1)
-  const [cookies, setCookie, removeCookie] = useCookies(['discount-percentage', 'calendar-service', 'install-declined', 'route-limit', 'use-route-limit'])
+  const [cookies, setCookie, removeCookie] = useCookies(['discount-percentage', 'calendar-service', 'install-declined', 'route-limit', 'use-route-limit', 'maps-beta'])
   const ua = useUserAgent()
   const [dlVisible, setDlVisible] = useState(false)
   const [prompt, setPropmt] = useState<Event & any | undefined>()
@@ -43,6 +43,7 @@ export default function App(props: AppProps) {
     if (typeof cookies['install-declined'] === "undefined") setCookie("install-declined", 'false', { path: '/', maxAge: 60 * 60 * 24 * 365 })
     if (typeof cookies['use-route-limit'] === "undefined") setCookie("use-route-limit", 'true', { path: '/', maxAge: 60 * 60 * 24 * 365 })
     if (typeof cookies['route-limit'] === "undefined") setCookie("route-limit", '15', { path: '/', maxAge: 60 * 60 * 365 })
+    if (typeof cookies['maps-beta'] === "undefined") setCookie("maps-beta", 'false', { path: '/', maxAge: 60 * 60 * 365 })
   }, [cookies])
 
   useEffect(() => {
@@ -91,14 +92,14 @@ export default function App(props: AppProps) {
       </Head>
 
       <Script id="google-tag-manager" strategy="afterInteractive" /*Google tag manager*/>
-          {`
+        {`
                 (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
                 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
                 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
                 })(window,document,'script','dataLayer','GTM-MVHLMXV');
                 `}
-        </Script>
+      </Script>
 
       <MantineProvider
         withGlobalStyles

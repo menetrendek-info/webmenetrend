@@ -47,7 +47,7 @@ const Home: NextPage = () => {
                     { title: "Kezelőfelület", icon: IconLayout, description: "Modern, letisztult és mobilbarát kezelőfelület." },
                     { title: "Gyors elérés", icon: IconSearch, description: "Egyszerű megálló- és állomáskeresés, a legutóbbi elemek mentése gyors elérésbe." },
                     { title: "Megosztás", icon: IconShare, description: "Útvonaltervek gyors megosztása kép formájában." },
-                    { title: "Térkép nézet", icon: IconMap, description: "Az útvonaltervek térképen is megtekinthetőek. Így garantáljuk, hogy eligazodsz az átszállásoknál." },
+                    { title: "Térkép nézet [BETA]", icon: IconMap, description: "Az útvonaltervek térképen is megtekinthetőek. Így garantáljuk, hogy eligazodsz az átszállásoknál. Keresd a beállításokban!" },
                     { title: "PWA támogatás", icon: IconApps, description: "Ez a weboldal egy PWA (progresszív webalkalmazás), így könnyen letöltheted alkalmazásként a telefonodra." },
                     { title: "Aktív fejlesztés", icon: IconRotateClockwise, description: "A weboldal szinte minden héten frissül. A funkciók folyamatosan bővülnek és a hibák folyamatosan javítva vannak." },
                 ]}

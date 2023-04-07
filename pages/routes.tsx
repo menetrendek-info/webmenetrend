@@ -38,7 +38,7 @@ const Route = ({ route, index }: { route: route, index: any }) => {
     const router = useRouter()
     const [file, setFile] = useState<File | undefined>()
     const [body, setBody] = useState<CalendarEvent | undefined>()
-    const [cookies] = useCookies(["calendar-service"])
+    const [cookies] = useCookies(["calendar-service", "maps-beta"])
 
     useEffect(() => {
         if (!body && exposition.length) {
@@ -75,7 +75,7 @@ const Route = ({ route, index }: { route: route, index: any }) => {
         </Accordion.Control>
         <Accordion.Panel>
             {!exposition.length ? (<Stack>
-                <Skeleton height={37} />
+                {cookies["maps-beta"] === "false" ? <></> : <Skeleton height={37} />}
                 <Timeline active={Infinity}>{Array(route.expositionData.exposition.runcount * 2).fill(0).map((v, i, arr) => {
                     if (i + 1 === arr.length) {// Last element
                         return (<Timeline.Item key={i} bullet={<ActionBullet muvelet="leszállás" network={1} />}>
@@ -91,7 +91,7 @@ const Route = ({ route, index }: { route: route, index: any }) => {
                     <Loader size={28} />
                 </Group>
             </Stack>) : <>
-                <RE route={route} exposition={exposition} />
+                <RE route={route} exposition={exposition} options={{ disableMap: (cookies["maps-beta"]) === "false" }} />
                 <Group position="right">
                     <ActionIcon role="button" aria-label="Hozzáadás a naptárhoz" onClick={() => cal(Number(cookies["calendar-service"]), body)}>
                         <IconCalendarEvent />
