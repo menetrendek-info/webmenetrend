@@ -117,19 +117,23 @@ export const StopInput = ({ variant }: { variant: "from" | "to" }) => {
 
     useEffect(() => {
         if (stops.length) {
-            if ((stops[0] as any).s_id) {
+            if (!(stops[0] as any).id) {
                 setStops([])
                 showNotification({ title: 'Megállóidat töröltük!', message: 'A gyakori megállók listája nem kompatibilis a jelenlegi verzióval. A lista törlésre került.', color: 'yellow', icon: <IconClearAll />, id: 'error-cleared-stops' })
             }
         }
     }, [stops])
 
+    useEffect(()=>{
+        console.log(data)
+    },[data])
+
     useEffect(() => {
         const delay = 1000
         let bounce: any
         if (input) {
             setLoading(true)
-            bounce = setTimeout(() => { apiCall("POST", "/api/autocomplete", { input: input }).then((e) => { setData(e.map((e: any) => ({ ...e, value: e.stop_name }))) }).finally(() => setLoading(false)) }, delay)
+            bounce = setTimeout(() => { apiCall("GET", "https://api.menetrendek.info/stops", { query: input }).then((e) => { setData(e.map((e: any) => ({ value: e.stop_name, id: e.stop_id }))) }).finally(() => setLoading(false)) }, delay)
         } else {
             setData([])
         }
@@ -152,7 +156,7 @@ export const StopInput = ({ variant }: { variant: "from" | "to" }) => {
         value={selected?.value || input}
         dropdownComponent={Dropdown}
         onChange={(e) => { setSelected(undefined); setInput(e) }}
-        onItemSubmit={(e: any) => { setStops([{ value: e.value, id: e.id, network: e.network }, ...stops.filter(item => !isEqual(item, { value: e.value, id: e.id, network: e.network }))]); setSelected(e); setInput(e.value) }}
+        onItemSubmit={(e: any) => { setStops([{ value: e.value, id: e.id }, ...stops.filter(item => !isEqual(item, { value: e.value, id: e.id }))]); setSelected(e); setInput(e.value) }}
         styles={(theme) => ({
             dropdown: {
                 background: '#1A1B1E',
