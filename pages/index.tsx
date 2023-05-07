@@ -50,7 +50,7 @@ const Home: NextPage = () => {
             <PageSection icon={IconAffiliate} title='Szolgáltatók' subtitle='Ezeknek a szolgáltatóknak a járatait találod meg az oldalunkon, ez a lista folyamatosan bővül.' />
             <Space h="md" />
             <Group spacing={6}>
-                {agencies.map((agency, i) => (<Group spacing={6}><a href={agency.agency_url} target='_blank' rel="noreferrer external"><Text size="lg">{agency.agency_name}</Text></a>{i !== agencies.length - 1 ? '•' : ''}</Group>))}
+                {agencies.map((agency, i) => (<Group key={i} spacing={6}><a href={agency.agency_url} target='_blank' rel="noreferrer external"><Text size="lg">{agency.agency_name}</Text></a>{i !== agencies.length - 1 ? '•' : ''}</Group>))}
             </Group>
         </Stack>
         <Stack my="lg" spacing={0}>
