@@ -1,7 +1,6 @@
 import { Box, Center, Group, MantineProvider, Paper, Space, Text } from "@mantine/core";
 import { IconLink } from "@tabler/icons";
 import type { NextPage } from "next";
-import { dateString } from "../client";
 import { apiCall, getHost } from "../components/api";
 import { RouteExposition, RouteSummary } from "../components/routes";
 import React from "react";
@@ -23,11 +22,11 @@ const Render: NextPage = (props: any) => {
         }
     }}>
         <Center sx={{ zIndex: 89, position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'black' }}>
-            <Box id="renderBox" p="md" pb={0} sx={{ zIndex: 90, background: '#25262B', maxWidth: 600 }}>
+            <Box id="renderBox" p="md" pb={0} sx={{ zIndex: 90, background: '#25262B', maxWidth: 800, minWidth: 600 }}>
                 <Paper p="sm" radius="lg">
                     <RouteSummary item={route} options={{ hideNetworks: true }} />
                     <Space h='md' />
-                    <RouteExposition route={route} exposition={exposition} options={{ hideRunsButton: true, disableMap: true }} />
+                    <RouteExposition route={route} />
                 </Paper>
                 <Group py={6} style={{ opacity: .8 }} position="right" spacing={2}>
                     <IconLink size={17} />
@@ -39,16 +38,8 @@ const Render: NextPage = (props: any) => {
 }
 
 Render.getInitialProps = async (ctx) => {
-    const host = getHost(ctx.req)
     let props: any = {}
-    const query = {
-        from: Number(ctx.query['from'] as string),
-        to: Number(ctx.query['to'] as string),
-        date: ctx.query['d'] as string || dateString(new Date()),
-        index: Number(ctx.query['i'] as string),
-    }
-    props.route = (await apiCall("POST", `${host}/api/routes`, query)).routes[query.index]
-    props.exposition = (await apiCall("POST", `${process.env.NODE_ENV === "development" ? "http://localhost:3000" : "https://menetrendek.info"}/api/exposition`, { exposition: props.route.expositionData.exposition, nativeData: props.route.expositionData.nativeData, datestring: query.date })).exposition
+    props.route = (await apiCall("GET", `https://api.menetrendek.info/trips/${ctx.query.id}`,))
     return props
 }
 

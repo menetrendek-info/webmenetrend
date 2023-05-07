@@ -2,6 +2,7 @@ import { Box, Code, Divider, Group, List, Space, Stack, Text, ActionIcon } from 
 import type { NextPage } from 'next';
 import { PageHeading, PageSection } from '../components/page';
 import {
+    IconAffiliate,
     IconApps,
     IconBrandPaypal,
     IconCoin,
@@ -22,22 +23,35 @@ import { useMediaQuery } from '@mantine/hooks';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { MyThemeIcon } from '@/components/brand';
+import { apiCall } from '@/components/api';
 
 const Home: NextPage = () => {
     const versionHide = useMediaQuery('(max-width: 435px)');
     const [donate, setDonate] = useState(false);
+    const [agencies, setAgencies] = useState<Array<any>>([]);
+
+    useEffect(() => {
+        apiCall("GET", 'https://api.menetrendek.info/agencies').then(data => setAgencies(data))
+    }, [agencies])
 
     return (<>
         <Group onClick={() => setDonate(false)} position='center' sx={{ pointerEvents: donate ? 'all' : 'none', overflow: 'hidden', transition: 'background .2s', zIndex: 9999, position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: donate ? 'rgba(0,0,0,.6)' : 'transparent' }}>
             <iframe id='kofiframe' src='https://ko-fi.com/menetrendekinfo/?hidefeed=true&widget=true&embed=true&preview=true' style={{ opacity: donate ? 1 : 0, border: 'none', borderRadius: 8 }} width={400} height={712} title='menetrendekinfo'></iframe>
         </Group >
-        <PageHeading icon={IconRoadSign} title="Menetrendek" subtitle='A modern menetrend kereső' suffix={versionHide ? <></> : <Code>v3.1</Code>} />
+        <PageHeading icon={IconRoadSign} title="Menetrendek" subtitle='A modern menetrend kereső' suffix={versionHide ? <></> : <Code>v3.2</Code>} />
         <Stack px="xs" spacing={0} sx={{ position: 'relative', display: 'flex' }}>
             <Box sx={(theme) => ({ zIndex: -1, position: 'absolute', top: 0, left: 0, width: '100%', height: 'calc(100% - 20px)', margin: '5px 0', borderRadius: theme.radius.md, background: theme.fn.rgba(theme.colors.dark[9], .7) })} />
             <Divider size="sm" my="sm" mt="md" label={<Text size="md">Útvonalterv készítése</Text>} />
             <Search />
             <Space h="xl" />
             <Space h="md" />
+        </Stack>
+        <Stack my="lg" spacing={0}>
+            <PageSection icon={IconAffiliate} title='Szolgáltatók' subtitle='Ezeknek a szolgáltatóknak a járatait találod meg az oldalunkon, ez a lista folyamatosan bővül.' />
+            <Space h="md" />
+            <Group spacing={6}>
+                {agencies.map((agency, i) => (<Group spacing={6}><a href={agency.agency_url} target='_blank' rel="noreferrer external"><Text size="lg">{agency.agency_name}</Text></a>{i !== agencies.length - 1 ? '•' : ''}</Group>))}
+            </Group>
         </Stack>
         <Stack my="lg" spacing={0}>
             <PageSection icon={IconPlus} title="Miért válassz minket?" subtitle="Íme néhány dolog, amiben egyszerűen jobbak vagyunk" />

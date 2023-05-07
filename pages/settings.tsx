@@ -18,7 +18,7 @@ const Settings: NextPage = () => {
     return (<>
         <PageHeading title="Beállítások" subtitle="Alapvető preferenciák az alkalmazás személyre szabására" icon={IconSettings} />
         <Stack mt="sm" spacing="sm">
-            <div id="discount"><ContentCard title="Kedvezmény" icon={IconDiscount}>
+            {/* <div id="discount"><ContentCard title="Kedvezmény" icon={IconDiscount}>
                 <Text>Kedvezménnyel utazol? Állítsd be, hogy hány százalék és mi előre kiszámítjuk neked a jegy árát!</Text>
                 <Text color={warning} size="xs">A kedvezményes árak, csak tájékoztató jellegűek!</Text>
                 <NumberInput
@@ -26,7 +26,7 @@ const Settings: NextPage = () => {
                     onChange={(e) => setCookie("discount-percentage", e, { path: '/', maxAge: 60 * 60 * 24 * 365 })}
                     min={0} max={100} size="md"
                 />
-            </ContentCard></div>
+            </ContentCard></div> */}
             <div id="calendar"><ContentCard icon={IconCalendar} title="Naptár alkalmazás">
                 <Stack spacing={4}>
                     <Text size="md">Itt beállíthatod, hogy melyik naptár appot használod.</Text>
@@ -36,15 +36,6 @@ const Settings: NextPage = () => {
                     </Stack>
                 </Stack>
             </ContentCard></div>
-            <div id="calendar"><CheckboxCard onChange={(e) => { setCookie('maps-beta', e.toString(), { path: '/', maxAge: 60 * 60 * 365 }) }} title={<Group spacing="xs">
-                <Text>Térkép nézet</Text>
-                <Badge size="xs">BETA</Badge>
-            </Group>}>
-                <Stack spacing={4}>
-                    <Text size="md">Útvonaltervek ábrázolása a térképen, hogy a lehető legykönnyebb legyen az átszállás.</Text>
-                    <Text color={warning} size="xs">A térképek egymás utáni megnyitása és bezárása crash-hez vezethet!</Text>
-                </Stack>
-            </CheckboxCard></div>
         </Stack>
     </>)
 }

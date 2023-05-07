@@ -31,7 +31,7 @@ export default function App(props: AppProps) {
   const [pageLoading, setPageLoading] = useState(false)
   const [[selection, setSelection], [input, setInput]] = [useState<Selection>({ to: undefined, from: undefined }), useState<Input>({ to: "", from: "" })]
   const [menuOpen, setMenuOpen] = useState(-1)
-  const [cookies, setCookie, removeCookie] = useCookies(['discount-percentage', 'calendar-service', 'install-declined', 'route-limit', 'use-route-limit', 'maps-beta'])
+  const [cookies, setCookie, removeCookie] = useCookies(['discount-percentage', 'calendar-service', 'install-declined', 'route-limit', 'use-route-limit', 'maps-beta', 'alert-shown'])
   const ua = useUserAgent()
   const [dlVisible, setDlVisible] = useState(false)
   const [prompt, setPropmt] = useState<Event & any | undefined>()

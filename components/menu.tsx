@@ -7,7 +7,7 @@ import { useRouter } from "next/router"
 import { Stop, StopInput } from "./stops";
 import { useContext, useCallback, useEffect } from "react"
 import { Input } from "@/pages/_app";
-import { dateString } from "@/client";
+import { getDateString } from "@/functions";
 
 export const Search = () => {
     const theme = useMantineTheme()
@@ -20,14 +20,7 @@ export const Search = () => {
     const router = useRouter()
 
     const generateUrl = useCallback(async () => {
-        if (!from || !to) { setSearchHref("#"); return }
-        const f_id: any = parseInt(`${from.id}${from.network === 0 ? '0' : '1'}`)
-        const t_id: any = parseInt(`${to.id}${to.network === 0 ? '0' : '1'}`)
-        setSearchHref(`/routes?${(new URLSearchParams({
-            ...(from ? { from: f_id } : {}),
-            ...(to ? { to: t_id } : {}),
-            ...(date ? dateString(date) === dateString(new Date()) ? {} : { d: dateString(date) } : {})
-        })).toString()}`)
+        return setSearchHref(`/trips?from=${from?.id}&to=${to?.id}&d=${getDateString(date)}`)
     }, [from, to, from_input, to_input, date])
 
     useEffect(() => {
