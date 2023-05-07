@@ -38,7 +38,7 @@ const Home: NextPage = () => {
         <Group onClick={() => setDonate(false)} position='center' sx={{ pointerEvents: donate ? 'all' : 'none', overflow: 'hidden', transition: 'background .2s', zIndex: 9999, position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: donate ? 'rgba(0,0,0,.6)' : 'transparent' }}>
             <iframe id='kofiframe' src='https://ko-fi.com/menetrendekinfo/?hidefeed=true&widget=true&embed=true&preview=true' style={{ opacity: donate ? 1 : 0, border: 'none', borderRadius: 8 }} width={400} height={712} title='menetrendekinfo'></iframe>
         </Group >
-        <PageHeading icon={IconRoadSign} title="Menetrendek" subtitle='A modern menetrend kereső' suffix={versionHide ? <></> : <Code>v3.1</Code>} />
+        <PageHeading icon={IconRoadSign} title="Menetrendek" subtitle='A modern menetrend kereső' suffix={versionHide ? <></> : <Code>v3.2</Code>} />
         <Stack px="xs" spacing={0} sx={{ position: 'relative', display: 'flex' }}>
             <Box sx={(theme) => ({ zIndex: -1, position: 'absolute', top: 0, left: 0, width: '100%', height: 'calc(100% - 20px)', margin: '5px 0', borderRadius: theme.radius.md, background: theme.fn.rgba(theme.colors.dark[9], .7) })} />
             <Divider size="sm" my="sm" mt="md" label={<Text size="md">Útvonalterv készítése</Text>} />
