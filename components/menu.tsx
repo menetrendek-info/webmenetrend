@@ -7,6 +7,7 @@ import { useRouter } from "next/router"
 import { Stop, StopInput } from "./stops";
 import { useContext, useCallback, useEffect } from "react"
 import { Input } from "@/pages/_app";
+import { getDateString } from "@/functions";
 
 export const Search = () => {
     const theme = useMantineTheme()
@@ -19,25 +20,7 @@ export const Search = () => {
     const router = useRouter()
 
     const generateUrl = useCallback(async () => {
-        return setSearchHref(`/routes?from=${from?.id}&to=${to?.id}&day=${(() => {
-            const d = date ? date : new Date()
-            switch (d.getDay()) {
-                case 0:
-                    return 'sunday'
-                case 1:
-                    return 'monday'
-                case 2:
-                    return 'tuesday'
-                case 3:
-                    return 'wednesday'
-                case 4:
-                    return 'thursday'
-                case 5:
-                    return 'friday'
-                case 6:
-                    return 'saturday'
-            }
-        })()}`)
+        return setSearchHref(`/trips?from=${from?.id}&to=${to?.id}&d=${getDateString(date)}`)
     }, [from, to, from_input, to_input, date])
 
     useEffect(() => {

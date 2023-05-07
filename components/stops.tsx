@@ -48,7 +48,7 @@ export const StopIcon = ({ network, size, ...props }: { network: number, size?: 
         case 13: // Trolley
             return <MdTram {...props} />
         default:
-            return <IconQuestionMark {...props} />
+            return <IconTrain {...props} />
     }
 }
 

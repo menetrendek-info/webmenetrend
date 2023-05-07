@@ -1,5 +1,5 @@
-import { ActionIcon, Avatar, Divider, Grid, Group, Stack, Text, Timeline, Button, Badge, Loader } from "@mantine/core";
-import { IconWalk, IconCheck, IconAlertTriangle, IconInfoCircle, IconMap, IconListDetails } from "@tabler/icons";
+import { ActionIcon, Avatar, Divider, Grid, Group, Stack, Text, Timeline, Button, Badge, Loader, Card } from "@mantine/core";
+import { IconWalk, IconCheck, IconArrowBarToRight, IconInfoCircle, IconMap, IconListDetails, IconArrowBarToLeft, IconTrain } from "@tabler/icons";
 import Link from "next/link"
 import { useRouter } from "next/router"
 import useColors from "./colors"
@@ -55,60 +55,40 @@ export const RouteSummary = memo(({ item, options }: { item: any, options?: { hi
     </Stack>)
 })
 
-export const RouteExposition = ({ route, exposition, options }: { route: any, exposition: any, options?: { hideRunsButton?: boolean, disableMap?: boolean } }) => {
+export const RouteExposition = ({ route, options }: { route: any, options?: { hideRunsButton?: boolean, disableMap?: boolean } }) => {
     const [mapView, setMapView] = useState(false)
     const [geoInfo, setGeoInfo] = useState(null)
     const router = useRouter()
 
     return (<Stack>
-        {options?.disableMap ? <></> : <Button variant="outline" leftIcon={!geoInfo || !exposition ? <Loader size="sm" /> : !mapView ? <IconMap /> : <IconListDetails />} onClick={!geoInfo || !exposition ? () => { } : () => setMapView(!mapView)}>
-            {!mapView ? "Térkép nézet" : "Idővonal nézet"}
-        </Button>}
-        {<Timeline active={Infinity}>
-            {exposition.map((item: any, index: any) => (<Timeline.Item lineVariant={item.action === "átszállás" ? "dashed" : "solid"} key={index} bullet={<ActionBullet muvelet={item.action} network={item.network!} />}>
+        {<Timeline active={Infinity} bulletSize={22}>
+            <Timeline.Item bullet={<IconTrain />}>
                 <Stack spacing={0}>
-                    <ExpositionBody item={item} options={options} />
+                    <Group spacing={4}>
+                        <IconArrowBarToRight size={25} />
+                        <Text size={25} weight={500}>{route.start_departure}</Text>
+                    </Group>
+                    <Text size="xl">
+                        {route.departure_stop}
+                    </Text>
+                    <Group spacing={4}>
+                        {route.trip_headsign ? <Text size="sm">{route.trip_headsign}</Text> : <></>}
+                        {route.route_long_name ? <Text size="sm">{route.route_long_name}</Text> : <></>}
+                    </Group>
                 </Stack>
-            </Timeline.Item>))}
+            </Timeline.Item>
+            <Timeline.Item bullet={<IconCheck />}>
+                <Stack spacing={0}>
+                    <Group spacing={4}>
+                        <IconArrowBarToLeft size={25} />
+                        <Text size={25} weight={500}>{route.end_arrival}</Text>
+                    </Group>
+                    <Text size="xl">
+                        {route.arrival_stop}
+                    </Text>
+                </Stack>
+            </Timeline.Item>
         </Timeline>
         }
     </Stack>)
-}
-
-export const ExpositionBody = ({ item, options, onClick }: { item: any, options?: { hideRunsButton?: boolean }, onClick?: any }) => {
-    const router = useRouter()
-    const [cookies] = useCookies(["discount-percentage"])
-
-    return (<>
-        <Group onClick={onClick} spacing={0} position="apart">
-            <Stack spacing={0}>
-                <Text>{item.station}</Text>
-                <Group spacing="xs" position="left">
-                    <Text size="xl" my={-2}>{item.time}</Text>
-                    {!item.departurePlatform ? <></> : <Avatar variant="outline" radius="xl" size={25}>{item.departurePlatform}</Avatar>}
-                </Group>
-            </Stack>
-            {!item.runsData || options?.hideRunsButton ? <></> :
-                <ActionIcon>
-                    <IconInfoCircle />
-                </ActionIcon>
-            }
-        </Group>
-        {!item.provider || !item.runId || !item.network ? <></> : <Group spacing="xs">
-            <ColoredStopIcon stroke={1.5} network={item.network} />
-            <Text size="sm">{item.provider}</Text>
-            <Text size="sm">{item.runId}</Text>
-        </Group>}
-        {!item.fare || !item.distance || !item.duration ? <></> :
-            <Group spacing={10}>
-                {item.fare < 0 ? <></> : <Text suppressHydrationWarning size="sm">{currency.format(calcDisc(item.fare, cookies["discount-percentage"]))}</Text>}
-                <Text size="sm">{item.distance} km</Text>
-                <Text size="sm">{item.duration} perc</Text>
-            </Group>
-        }
-        {!item.stations ? <></> : <Text size="sm">{item.stations}</Text>}
-        {!item.operates ? <></> : <Text size="sm">Közlekedik: {item.operates}</Text>}
-        {!item.timeForTransfer ? <></> :
-            <Text size="sm">{item.timeForTransfer}</Text>}
-    </>)
 }
