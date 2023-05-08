@@ -31,7 +31,7 @@ const Home: NextPage = () => {
     const [agencies, setAgencies] = useState<Array<any>>([]);
 
     useEffect(() => {
-        apiCall("GET", 'https://api.menetrendek.info/agencies').then(data => setAgencies(data))
+        if (!agencies.length) apiCall("GET", 'https://api.menetrendek.info/agencies').then(data => setAgencies(data))
     }, [agencies])
 
     return (<>
